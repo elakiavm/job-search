@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Search</title>
+    <style>
+        *{
+            font-family: arial, sans-serif;
+          }
+          #bookForm {
+            background: #f7f7f7;
+            padding: 20px;
+            max-width: 500px;
+          }
+          #bookForm * {
+            box-sizing: border-box;
+          }
+          #bookForm input, #bookForm label {
+            display: block;
+            width: 100%;
+          }
+          #bookForm input {
+            padding: 10px;
+          }
+          #bookForm label {
+            padding: 10px 0;
+          }
+          #bookForm input[type="submit"] {
+            margin-top: 20px;
+            border: 0;
+            color: #fff;
+            background: #cb1111;
+            cursor: pointer;
+          }
+          #bookForm input[type="submit"]:disabled { background: #424242; }
+    </style>
+</head>
+<body>
+    <form id="bookForm" onsubmit="return book();">
+        <label for="name">Name</label>
+        <input type="text" name="name" required/>
+       
+        <label for="email">Email</label>
+        <input type="email" name="email" required/>
+       
+        <label for="date">Date</label>
+        <input type="date" name="date" required/>
+       
+        <input type="submit" value="Go!" disabled id="bookGo"/>
+      </form>
+      <script>
+                // (A) SEND BOOKING REQUEST
+        function book () {
+            // (A1) PREVENT MULTIPLE SUBMIT
+            document.getElementById("bookGo").disabled = true;
+        
+            // (A2) COLLECT FORM DATA
+            let data = new FormData(document.getElementById("bookForm"));
+        
+            // (A3) SEND!
+            fetch("/book", { method:"POST", body:data })
+            .then((res) => {
+            if (res.status==200) { location.href = "/thank"; }
+            else { alert("Opps an error has occured."); }
+            })
+            .catch((err) => { alert("Opps an error has occured."); });
+            return false;
+        }
+        
+        // (B) ON PAGE LOAD
+        window.onload = () => {
+            // (B1) MIN SELECTABLE DATE IS TODAY
+            let datepick = document.getElementsByName("date")[0];
+            datepick.min = new Date().toISOString().split("T")[0];
+        
+            // (B2) ENABLE FORM
+            document.getElementById("bookGo").disabled = false;
+        };
+      </script>
+</body>
+</html>
